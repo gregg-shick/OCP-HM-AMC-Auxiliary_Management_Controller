@@ -394,7 +394,7 @@ If an AMC device provides power metrics, the EnvironmentMetric resource and Sens
 
 ## Security
 Requirements within this section are intended to define security and SPDM requirements for AMC controllers applicable across supported device classes. 
-Note - SPDM Requirements leveraged from the [OCP Datacenter NVMe® SSD Specification](https://www.opencompute.org/documents/datacenter-nvme-ssd-specification-v2-6-2-pdf) version 2.6.
+Note - SPDM Requirements adopted from the [OCP Datacenter NVMe® SSD Specification](https://www.opencompute.org/documents/datacenter-nvme-ssd-specification-v2-6-2-pdf) version 2.6.
 
 ### SPDM
 
