@@ -88,7 +88,7 @@ Date | Version # | Author | Description
 9/15/2023 | 1.0 | Chad Yoshikawa | Used recent
 2/12/2024 | 1.0 | Gregg Shick | Convert to markdown
 4/15/2024 | 1.0 | John Leung | Format to work with DMTF Doc Publication tool
-3/12/2025 | 1.2 | Gregg Shick | Add Table #'s <br> Cleanup SMC to AMC <br> Rewrite of Security section
+3/12/2025 | 1.1 | Gregg Shick | Add Table #'s <br> Cleanup SMC to AMC <br> Rewrite of Security section <br> General doc cleanup. 
 
 
 # Overview
@@ -136,21 +136,22 @@ Devices meeting this specification *shall* implement DMTF DSP0233 ([Management C
 ## Protocol layers supported
 
 ### MCTP
+
 * Compliance with MCTP Base Protocol Specification
      
      i. The device *shall* comply to all endpoint requirements as specified in this section
      
      ii. For SMBus (Binding) Protocol, the device *shall not* be the MCTP Bus Owner
 
-     iii. The device *shall* support receiving an MCTP Set Endpoint ID command at any time (Standby or Main) power is applied. For example, the BMC firmware could be updated resulting in a BMC reset. The BMC initialization sequence will go out and dynamically discover devices and assign Endpoint IDs. While in most cases, the same Endpoint ID will be assigned, this is not guaranteed. The BMC will query the device to see if an Endpoint ID has been previously assigned and is not in conflict with any other assigned Endpoint.
+     iii. The device *shall* support receiving an MCTP Set Endpoint ID command at any time (Standby or Main) power is applied. For example, the BMC firmware could be updated resulting in a BMC reset. The BMC initialization sequence will go out and dynamically discover devices and assign Endpoint IDs. While in most cases the same Endpoint ID will be assigned, this is not guaranteed.
 
-* Compliance with Section “MCTP Message Types”
-* Compliance with Section “MCTP Control Protocol”
-* Compliance with Section “MCTP Control Messages”
-* Support Section “MCTP Control Message Command Codes”, “MCTP Control Command
+* The device *shall* comply with Section “MCTP Message Types”
+* The device *shall* comply with Section “MCTP Control Protocol”
+* The device *shall* comply with Section “MCTP Control Messages”
+* The device *shall* comply with Section “MCTP Control Message Command Codes”, “MCTP Control Command
 Numbers”
-* Support Section “Prepare for Endpoint Discovery”
-* Support Section “Endpoint Discovery”
+* The device *shall* comply with Section “Prepare for Endpoint Discovery”
+* The device *shall* comply with Section “Endpoint Discovery”
 
 **Table 1**
 MCTP Control Command ([DSP0236](https://www.dmtf.org/dsp/DSP0236)) | Implementation
@@ -182,17 +183,13 @@ PLDM Messaging Control and Discovery Command Codes ([DSP0240](https://www.dmtf.o
 0x09 MultipartReceive | Required 
 
 
-
 ### Redfish Device Enablement
 
-The AMC support requirements are:
-
 - Devices *shall* conform to DSP0218 ([Platform Level Data Model (PLDM) for Redfish Device Enablement](https://www.dmtf.org/dsp/DSP0218))  
-- Devices *shall* support 1 support one RDE tree operartion.
+- Devices *shall* support one RDE tree operation.
 - Devices *should* support a minimum of 4 concurrent RDE tree operations.  
 - Devices *should* be capable of returning the requested portions of the Redfish tree in less than 2 seconds.
 
-Table specific the RDE command requirements
 
 **Table 3**
 RDE Command | &nbsp; | Implementation
@@ -245,7 +242,7 @@ The following device classes *shall* be supported: Accelerator, NIC, DPU (SmartN
 
 # API Surface
 
-Table XX specifies the required support for various device classes. "R" signifies that support is required. "C" signifies that support is required if the feature exists.
+Table 4 specifies the required support for various device classes. "R" signifies that support is required. "C" signifies that support is required if the feature exists.
 For example, an Accelerator device may not have a Fan and thus Fan Control is conditional.
 
 **Table 4**
@@ -260,7 +257,7 @@ Subsystem | Thermal | Inventory | Software Management | Fan Control | Security |
 
 ## Thermal management subsystem
 
-The thermal management subsystem is intended to allow AMC devices to be managed by a closed loop thermal system. Implementation the thermal management subsystem requires support for the following Redfish resources and properties.
+The thermal management subsystem is intended to allow AMC devices to be managed by a closed loop thermal system. Implementation of the thermal management subsystem requires support for the following Redfish resources and properties.
 
 **Sensor**
 
@@ -281,7 +278,7 @@ Devices implementing a single replaceable component may implement PLDM type 2 fo
 
 **PLDM Type 2 Sensor Requirements**
 
-Table 5 specifies the support requirement for the PLDM for Platform Monitoring and Control ([DSP0248](https://www.dmtf.org/dsp/DSP0248))
+Table 5 specifies the support requirement for PLDM for Platform Monitoring and Control ([DSP0248](https://www.dmtf.org/dsp/DSP0248))
 
 **Table 5**
 Command Codes | &nbsp; | Implementation
@@ -312,7 +309,7 @@ PDR Type Values | &nbsp; | &nbsp;
 &nbsp; | 22 = Redfish Resource PDR | Required for RDE
 
 
-Devices implementing multiple replaceable components shall implement ThermalSubsystem over RDE.
+Devices implementing multiple replaceable components *shall* implement ThermalSubsystem over RDE.
 
 **ThermalSubsystem**
 
@@ -376,36 +373,11 @@ Collections shall contain at least one member of type SoftwareInventory, impleme
 * **SoftwareID**: Unique identifier for this devices firmware type.
 * **AdditionalVersions**: Devices that fit the Redfish descriptions in these properties *shall* implement AdditionalVersions, with the appropriate subproperties. Devices that do not fit the description *shall* omit the AdditionalVersions Property.
 
-AMC devices with a single updateable firmware or software component *should* implement PLDM for Firmware Update (type 5).
-
-**Table 7**
-PLDM for Firmware Update | Implementation
-:-| :-|
-0x01 QueryDeviceIdentifiers | Required
-0x02 GetFirmwareParameters | Required
-0x03 QueryDownstreamDevices | Required
-0x04 QueryDowstreamIdentifiers | Required
-0x05 GetDownstreamFirmwareParameters  | Required
-0x10 RequestUpdate | Required
-0x13 PassComponentTable | Required
-0x14 UpdateComponent | Required
-0x15 RequestFirmwareData | Required
-0x16 TransferComplete | Required
-0x17 VerifyComplete | Required
-0x18 ApplyComplete | Required
-0x1A ActivateFirmware| Required
-0x1B GetStatus  | Required
-0x1B GetStatus | Required
-0x1C CancelUpdateComponent | Required
-0x1D CancelUpdate | Required
-0x20 RequestDownstreamDeviceUpdate | Required
-
-
 AMC devices *shall* be updated in 1 minute or less, measured in the time that the device is unavailable, and 5 minutes or less from the time the update is requested, including all data transfers to the device.
 
 ## Fan Control  
 
-AMC devices containing fans shall implement control and monitoring of those fans through the RDE interface. Devices shall support the Redfish Control schema for fan control within a system. AMC devices may run internal control loops in addition to the control loops presented on the RDE interface.
+AMC devices containing fans *shall* implement control and monitoring of those fans through the RDE interface. Devices *shall* support the Redfish Control schema for fan control within a system. AMC devices may run internal control loops in addition to the control loops presented on the RDE interface.
 
 ## Power Management  
 
@@ -422,20 +394,21 @@ If an AMC device provides power metrics, the EnvironmentMetric resource and Sens
 
 ## Security
 Requirements within this section are intended to define security and SPDM requirements for AMC controllers applicable across supported device classes. 
-### SPDM
-AMC *shall* comply with the following SPDM requirements:
+Note - SPDM Requirements adopted from the [OCP Datacenter NVMe® SSD Specification](https://www.opencompute.org/documents/datacenter-nvme-ssd-specification-v2-6-2-pdf) version 2.6.
 
-- Support SPDM 1.2.2 ([DSP0274](https://www.dmtf.org/dsp/DSP0274)) or later while maintaining backward compatibility with SPDM 1.1.  Signature endianness *shall* follow SPDM 1.2.2 or later.
-- Comply with the revised PCI-SIG Component Measurement and Authentication (CMA-SPDM) ECN that was published on September 20, 2023.
-- Comply with the Secured Messages using SPDM over MCTP Binding Specification ([DSP0276](https://www.dmtf.org/dsp/DSP0276)), Version 1.1.1 or later.
-- Comply with the Secured Messages using SPDM Specification ([DSP0277](https://www.dmtf.org/dsp/DSP0277)), Version 1.1.1 or later. Mutual authentication is not required.
-- Comply with the Security Protocol and Data Model (SPDM) over MCTP Binding Specification ([DSP0275](https://www.dmtf.org/dsp/DSP0275)), Version 1.0.2 or later.
+### SPDM
+
+- *Shall* support SPDM 1.2.2 ([DSP0274](https://www.dmtf.org/dsp/DSP0274)) or later while maintaining backward compatibility with SPDM 1.1.  Signature endianness *shall* follow SPDM 1.2.2 or later.
+- *Shall* comply with the revised PCI-SIG Component Measurement and Authentication (CMA-SPDM) ECN that was published on September 20, 2023.
+- *Shall* comply with the Secured Messages using SPDM over MCTP Binding Specification ([DSP0276](https://www.dmtf.org/dsp/DSP0276)), Version 1.1.1 or later.
+- *Shall* comply with the Secured Messages using SPDM Specification ([DSP0277](https://www.dmtf.org/dsp/DSP0277)), Version 1.1.1 or later. Mutual authentication is not required.
+- *Shall* comply with the Security Protocol and Data Model (SPDM) over MCTP Binding Specification ([DSP0275](https://www.dmtf.org/dsp/DSP0275)), Version 1.0.2 or later.
 - Must not drop the response if RESPOND_IF_READY is not received within WTMax amount of time after sending an ERROR message with an ErrorCode equal to ResponseNotReady.
-- Be ready to respond to SPDM requests within a maximum of 2 second after main power is applied.
-- SPDM MCTP interpacket delay shall be less than 40 ms.
-- Support a DataTransferSize of at least 4 KiB.
-- If not ready to accept a new request message, the AMC shall respond with an ERROR response message with an ErrorCode of Busy (3h) (i.e., the device shall not silently discard the request message).
-- If a request is received out of order, the AMC shall respond with an ERROR response message with an ErrorCode of RequestResynch (i.e., 43h) for that request and for all subsequent requests until a GET_VERSION command is received and processed.  The device shall not silently discard requests due to an out of order request.
+- *Shall* be ready to respond to SPDM requests within a maximum of 2 second after main power is applied.
+- SPDM MCTP interpacket delay *shall* be less than 40 ms.
+- *Shall* support a DataTransferSize of at least 4 KiB.
+- If not ready to accept a new request message, the AMC *shall* respond with an ERROR response message with an ErrorCode of Busy (3h) (i.e., the device shall not silently discard the request message).
+- If a request is received out of order, the AMC *shall* respond with an ERROR response message with an ErrorCode of RequestResynch (i.e., 43h) for that request and for all subsequent requests until a GET_VERSION command is received and processed.  The device *shall not* silently discard requests due to an out of order request.
 
 Table 8 specifies ACM response code requirements for SPDM.
 
@@ -463,12 +436,12 @@ SPDM Repsonse | Implementation | Notes
 0x7F ERROR | Required |  
 
 ### SPDM Certificate Requirements
-- The Root CA Trusted Certificate Authority shall be the device vendor and shall be the same across all device models developed by the device vendor.
+- The Root CA Trusted Certificate Authority *shall* be the device vendor and shall be the same across all device models developed by the device vendor.
 - Self-signed certificates are prohibited.
-- The AMC shall support the AliasCert or DeviceCert model in slot 0.
+- The AMC *shall* support the AliasCert or DeviceCert model in slot 0.
   
 ### SPDM Firmware Measurements
-- The AMC shall be able to generate signed measurements (i.e., MEAS_CAP field shall be set to 10b) and shall support the following Measurement block types:
+- The AMC *shall* be able to generate signed measurements (i.e., MEAS_CAP field shall be set to 10b) and *shall* support the following Measurement block types:
   
 **Table 9**  
 DMTFSpecMeasurementValueType | Requirement 
@@ -484,16 +457,15 @@ DMTFSpecMeasurementValueType | Requirement
 [6:0] = 07h: Mutable firmware’s security version number, which should be formatted as an 8-byte unsigned integer | Optional
 
   
-- The AMC shall always return measurements of the most recently activated firmware and current configuration without requiring a power cycle or any type of PCIe reset. Measurements of the activated firmware image are acceptable.
-- The AMC shall report the same measurements blocks and values for all devices in a product family (e.g., devices with the same model but different capacity points, endurance, or form factor).
-- The AMC shall provide a reference integrity measurement manifest (RIM) for the firmware modules and configuration settings for components using the CoRIM schema as defined by IETF (refer to the latest version of draft-ietf-rats-corim - Concise Reference Integrity Manifest or the RFC (if any) published from that Internet-Draft).
-- The reference measurements in the CoRIM schema may be expressed using the CoMID tags and/or the CoSWID tags. If the CoRIM has reference measurements from sub-components from different manufacturers, then the reference values of the sub-components shall be captured in CoSWID tags with their individual signatures.
-- The RIM shall apply to all devices in a product family (e.g., devices with the same model but different capacity points, endurance, or form factor). The RIM shall not include any instance specific information (e.g., any device specific identifiers such as Serial Number, UUID, etc.).
-- The RIM shall be signed by the device manufacturer using the COSE schema (refer to RFC 8152 - CBOR Object Signing and Encryption (COSE) (ietf.org)). The device manufacturer shall use an approved digital signature algorithm (see SEC-48).
-- The device manufacturer shall provide the customer with a digital certificate with the public key that is able to be used to verify the RIM signatures. This digital certificate shall validate (e.g., via direct signature or certificate chain) to the Root CA Trusted Certificate Authority
-- The RIM shall contain the hash values of each firmware module using an approved hashing algorithm (see SEC-48). ASCII text string values in the RIMs are acceptable if the string length is less than 128 bytes and the string is descriptive (e.g., a module identifier string, a product identifier string, or firmware revision string).
+- The AMC *shall* always return measurements of the most recently activated firmware and current configuration without requiring a power cycle or any type of PCIe reset. Measurements of the activated firmware image are acceptable.
+- The AMC *shall* report the same measurements blocks and values for all devices in a product family (e.g., devices with the same model but different capacity points, endurance, or form factor).
+- The AMC *shall* provide a reference integrity measurement manifest (RIM) for the firmware modules and configuration settings for components using the CoRIM schema as defined by IETF (refer to the latest version of draft-ietf-rats-corim - Concise Reference Integrity Manifest or the RFC (if any) published from that Internet-Draft).
+- The reference measurements in the CoRIM schema may be expressed using the CoMID tags and/or the CoSWID tags. If the CoRIM has reference measurements from sub-components from different manufacturers, then the reference values of the sub-components *shall* be captured in CoSWID tags with their individual signatures.
+- The RIM *shall* apply to all devices in a product family (e.g., devices with the same model but different capacity points, endurance, or form factor). The RIM *shall not* include any instance specific information (e.g., any device specific identifiers such as Serial Number, UUID, etc.).
+- The RIM *shall* be signed by the device manufacturer using the COSE schema (refer to RFC 8152 - CBOR Object Signing and Encryption (COSE) (ietf.org)). The device manufacturer *shall* use an approved digital signature algorithm (see SEC-48).
+- The device manufacturer *shall* provide the customer with a digital certificate with the public key that is able to be used to verify the RIM signatures. This digital certificate *shall* validate (e.g., via direct signature or certificate chain) to the Root CA Trusted Certificate Authority
+- The RIM *shall* contain the hash values of each firmware module using an approved hashing algorithm (see SEC-48). ASCII text string values in the RIMs are acceptable if the string length is less than 128 bytes and the string is descriptive (e.g., a module identifier string, a product identifier string, or firmware revision string).
 
-Note - SPDM Requirements in this section leveraged from the [OCP Datacenter NVMe® SSD Specification](https://www.opencompute.org/documents/datacenter-nvme-ssd-specification-v2-6-2-pdf) version 2.6.
 
 # Glossary of Terms
 
